@@ -17,7 +17,7 @@ namespace ItemStatDisplay
     }
 
 
-    [BepInPlugin(Consts.guid, "Item Stat Display", "1.0")]
+    [BepInPlugin(Consts.guid, "Item Stat Display", "1.0.1")]
     public class MainClass : BaseUnityPlugin
     { 
 
