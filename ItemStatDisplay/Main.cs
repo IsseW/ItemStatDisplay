@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using TMPro;
 
 namespace ItemStatDisplay
 {
@@ -38,9 +39,6 @@ namespace ItemStatDisplay
 
             harmony.PatchAll(typeof(PowerUpUIPatch));
             harmony.PatchAll(typeof(ExtraPowerupInfo));
-
-            log.LogInfo("Item Stat Display Added!");
-            
         }
     }
 
@@ -160,12 +158,7 @@ namespace ItemStatDisplay
         [HarmonyPostfix]
         static void Postfix(PowerupInfo __instance, PointerEventData eventData)
         {
-            MainClass.instance.log.LogInfo(__instance.gameObject.transform.parent.gameObject.name);
-            string statInfo = GetStatInfo(__instance.powerup.name);
-
-            ItemInfo.Instance.SetText(__instance.powerup.name 
-                                      + "\n<size=50%><i>" + __instance.powerup.description 
-                                      + "</i></size>\n\n<size=60%>" + statInfo, true);
+            ItemInfo.Instance.text.text += "</i></size>\n\n<size=60%>" + GetStatInfo(__instance.powerup.name);
         }
     }
 }
