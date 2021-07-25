@@ -11,15 +11,15 @@ using TMPro;
 namespace ItemStatDisplay
 {
 
-    static class Consts
-    {
-        public const string guid = "com.isse.item_stat_display";
-    }
 
-
-    [BepInPlugin(Consts.guid, "Item Stat Display", "1.0.1")]
+    [BepInPlugin(Guid, Name, Version)]
     public class MainClass : BaseUnityPlugin
-    { 
+    {
+        public const string
+            Name = "ItemStatDisplay",
+            Author = "Isse",
+            Guid = Author + "." + Name,
+            Version = "1.0.2.0";
 
         public static MainClass instance;
         public Harmony harmony;
@@ -34,10 +34,11 @@ namespace ItemStatDisplay
                 Destroy(this);
 
             log = Logger;
-            harmony = new Harmony(Consts.guid);
+            harmony = new Harmony(Guid);
 
 
             harmony.PatchAll(typeof(PowerUpUIPatch));
+            harmony.PatchAll(typeof(ExtraItemInfo));
             harmony.PatchAll(typeof(ExtraPowerupInfo));
         }
     }
@@ -79,6 +80,30 @@ namespace ItemStatDisplay
         public static string Percent(float f)
         {
             return (f * 100f).ToString("N0") + "%";
+        }
+    }
+
+    public static class ExtraItemInfo
+    {
+
+        [HarmonyPatch(typeof(InventoryCell), "OnPointerEnter"), HarmonyPostfix]
+        static void PostFix(InventoryCell __instance)
+        {
+            if (__instance.currentItem)
+            {
+                if (__instance.currentItem.swingFx)
+                {
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackDamage + " damage";
+                    if (__instance.currentItem.type == InventoryItem.ItemType.Axe)
+                    {
+                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.resourceDamage + " damage to trees";
+                    }
+                    if (__instance.currentItem.type == InventoryItem.ItemType.Pickaxe)
+                    {
+                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.resourceDamage + " damage to rocks";
+                    }
+                }
+            }
         }
     }
 
@@ -154,9 +179,8 @@ namespace ItemStatDisplay
         }
         
         
-        [HarmonyPatch(typeof(PowerupInfo), "OnPointerEnter")]
-        [HarmonyPostfix]
-        static void Postfix(PowerupInfo __instance, PointerEventData eventData)
+        [HarmonyPatch(typeof(PowerupInfo), "OnPointerEnter"), HarmonyPostfix]
+        static void Postfix(PowerupInfo __instance)
         {
             ItemInfo.Instance.text.text += "</i></size>\n\n<size=60%>" + GetStatInfo(__instance.powerup.name);
         }

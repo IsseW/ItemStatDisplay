@@ -78,6 +78,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s/Y "C:\Users\issey\source\repos\ItemStatDisplay\ItemStatDisplay\bin\Debug\ItemStatDisplay.dll" "C:\Program Files (x86)\Steam\steamapps\common\Muck\BepInEx\plugins"</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Muck\BepInEx\plugins" /q /s /y /i
+
+xcopy "$(TargetPath)" "C:\dev\mods\$(SolutionName)\plugins\" /q /s /y /i</PostBuildEvent>
   </PropertyGroup>
 </Project>
