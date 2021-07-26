@@ -19,7 +19,7 @@ namespace ItemStatDisplay
             Name = "ItemStatDisplay",
             Author = "Isse",
             Guid = Author + "." + Name,
-            Version = "1.0.2.0";
+            Version = "1.0.3.0";
 
         public static MainClass instance;
         public Harmony harmony;
@@ -36,9 +36,9 @@ namespace ItemStatDisplay
             log = Logger;
             harmony = new Harmony(Guid);
 
-
+             
             harmony.PatchAll(typeof(PowerUpUIPatch));
-            harmony.PatchAll(typeof(ExtraItemInfo));
+            harmony.PatchAll(typeof(ExtraItemInfo)); 
             harmony.PatchAll(typeof(ExtraPowerupInfo));
         }
     }
@@ -91,16 +91,62 @@ namespace ItemStatDisplay
         {
             if (__instance.currentItem)
             {
-                if (__instance.currentItem.swingFx)
+
+                if (__instance.currentItem.bowComponent && __instance.currentItem.type == InventoryItem.ItemType.Bow)
                 {
-                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackDamage + " damage";
-                    if (__instance.currentItem.type == InventoryItem.ItemType.Axe)
+                    if (__instance.currentItem.attackDamage != 1)
                     {
-                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.resourceDamage + " damage to trees";
+                        ItemInfo.Instance.text.text += "\n x" + __instance.currentItem.attackDamage + " damage to mobs";
                     }
-                    if (__instance.currentItem.type == InventoryItem.ItemType.Pickaxe)
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackSpeed + " attack speed";
+
+                    if (__instance.currentItem.bowComponent.nArrows > 1)
                     {
-                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.resourceDamage + " damage to rocks";
+                        ItemInfo.Instance.text.text += "\n fires " + __instance.currentItem.bowComponent.nArrows + " arrows";
+                    }
+                    ItemInfo.Instance.text.text += "\n" + __instance.currentItem.bowComponent.projectileSpeed + " projectile speed";
+                }
+                else if (__instance.currentItem.attackDamage > 1)
+                {
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackDamage + " damage to mobs";
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackSpeed + " attack speed";
+                }
+
+                if (__instance.currentItem.attackRange > 1)
+                {
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.attackRange + " range";
+                }
+                if (__instance.currentItem.resourceDamage > 1)
+                {
+                    ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.resourceDamage + " damage to " + 
+                                                   (__instance.currentItem.type == InventoryItem.ItemType.Pickaxe ? "rocks" : "trees");
+                }
+
+                if (__instance.currentItem.fuel)
+                {
+                    ItemInfo.Instance.text.text += "\ncan smelt " + __instance.currentItem.fuel.maxUses + " item" + (__instance.currentItem.fuel.maxUses > 1 ? "s" : "");
+                }
+                if (__instance.currentItem.processable)
+                {
+                    ItemInfo.Instance.text.text += "\nSmelts in " + __instance.currentItem.processTime + " second" + (__instance.currentItem.processTime != 1f ? "s" : "");
+                    //ItemInfo.Instance.text.text += "\nTurns into " + __instance.currentItem.processedItem.name + " when " + 
+                    //                               (__instance.currentItem.processType == InventoryItem.ProcessType.Cook ? "cooked" : "smelted");
+                }
+
+
+                if (__instance.currentItem.tag == InventoryItem.ItemTag.Food)
+                {
+                    if (__instance.currentItem.heal > 0)
+                    {
+                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.heal + " health";
+                    }
+                    if (__instance.currentItem.stamina > 0)
+                    {
+                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.stamina + " stamina";
+                    }
+                    if (__instance.currentItem.hunger > 0)
+                    {
+                        ItemInfo.Instance.text.text += "\n +" + __instance.currentItem.hunger + " hunger";
                     }
                 }
             }
