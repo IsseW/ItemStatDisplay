@@ -18,7 +18,7 @@ namespace ItemStatDisplay
             Name = "ItemStatDisplay",
             Author = "Isse",
             Guid = Author + "." + Name,
-            Version = "1.0.3.0";
+            Version = "1.0.4.0";
 
         public static MainClass instance;
         public Harmony harmony;
